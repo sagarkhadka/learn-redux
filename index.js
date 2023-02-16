@@ -1,11 +1,7 @@
 const redux = require('redux')
-const createStore = redux.createStore
+const createSotore = redux.createStore
 const bindActionCreator = redux.bindActionCreators
 const combileReducers = redux.combineReducers
-const applyMiddleWare = redux.applyMiddleware
-
-const reduxLogger = require('redux-logger')
-const logger = reduxLogger.createLogger()
 
 // init action in redux
 const ORDER_CAKE = 'ORDER_CAKE'
@@ -13,9 +9,6 @@ const CAKE_RESTOCKED = 'CAKE_RESTOCKED'
 
 const ICECREAM_ORDER = 'ICECREAM_ORDER'
 const ICECREAM_RESTOCKED = 'ICECREAM_RESTOCKED'
-
-const DONOUGHT_ORDER = 'DONOUGHT_ORDER'
-const DONOUGHT_RESTOCK = 'DONOUGHT_RESTOCK'
 
 // action creator is a functin that returns the object
 const orderCake = () => {
@@ -47,20 +40,6 @@ const icecreamRestock = (qty = 1) => {
   }
 }
 
-const donoughtOrder = (qty = 1) => {
-  return {
-    type: DONOUGHT_ORDER,
-    payLoad: qty,
-  }
-}
-
-const donoughtRestock = (qty = 1) => {
-  return {
-    type: DONOUGHT_RESTOCK,
-    payLoad: qty,
-  }
-}
-
 // const initialState = {
 //   numOfCakes: 10,
 //   numOfIcecream: 20,
@@ -71,11 +50,7 @@ const initialCakeState = {
 }
 
 const initialIceCreamState = {
-  numOfIcecream: 20,
-}
-
-const initialDonoughtState = {
-  numOfDonought: 5,
+  numOfIcecream: 20
 }
 
 // (previousState, action) => newState
@@ -84,7 +59,7 @@ const cakeReducer = (state = initialCakeState, action) => {
     case ORDER_CAKE:
       return {
         ...state,
-        numOfCakes: state.numOfCakes - action.payLoad,
+        numOfCakes: state.numOfCakes - 1,
       }
     case CAKE_RESTOCKED:
       return {
@@ -101,7 +76,7 @@ const iceCreamReducer = (state = initialIceCreamState, action) => {
     case ICECREAM_ORDER:
       return {
         ...state,
-        numOfIcecream: state.numOfIcecream - action.payLoad,
+        numOfIcecream: state.numOfIcecream - 1,
       }
     case ICECREAM_RESTOCKED:
       return {
@@ -113,54 +88,31 @@ const iceCreamReducer = (state = initialIceCreamState, action) => {
   }
 }
 
-const donoughtReducer = (state = initialDonoughtState, action) => {
-  switch (action.type) {
-    case DONOUGHT_ORDER:
-      return {
-        ...state,
-        numOfDonought: state.numOfDonought - action.payLoad,
-      }
-    case DONOUGHT_RESTOCK:
-      return {
-        ...state,
-        numOfDonought: state.numOfDonought + action.payLoad,
-      }
-    default: {
-      return state
-    }
-  }
-}
-
 const rootReducer = combileReducers({
   cake: cakeReducer,
-  iceCream: iceCreamReducer,
-  donought: donoughtReducer,
+  iceCream: iceCreamReducer
 })
 
-const store = createStore(rootReducer, applyMiddleWare(logger))
+const store = createSotore(rootReducer)
 console.log('inital', store.getState())
 
-const unsubscribe = store.subscribe(() => {})
+const unsubscribe = store.subscribe(() => console.log('update state', store.getState()))
 
-const action = bindActionCreator(
-  {
-    orderCake,
-    restockCake,
-    icecreamOrder,
-    icecreamRestock,
-    donoughtOrder,
-    donoughtRestock,
-  },
-  store.dispatch
-)
-
-action.orderCake(5)
-action.restockCake(3)
+const action = bindActionCreator({ orderCake, restockCake, icecreamOrder, icecreamRestock }, store.dispatch)
+action.orderCake()
+action.orderCake()
+action.orderCake()
+action.orderCake(3)
 
 action.icecreamOrder(4)
 action.icecreamRestock(5)
 
-action.donoughtOrder(3)
-action.donoughtRestock(20)
+// store.dispatch(orderCake())
+// store.dispatch(orderCake())
+// store.dispatch(orderCake())
+// store.dispatch(restockCake(3))
+
+// store.dispatch(icecreamOrder(4))
+// store.dispatch(icecreamRestock(5))
 
 unsubscribe()
