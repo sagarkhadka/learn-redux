@@ -50,7 +50,7 @@ const initialCakeState = {
 }
 
 const initialIceCreamState = {
-  numOfIcecream: 20
+  numOfIcecream: 20,
 }
 
 // (previousState, action) => newState
@@ -83,6 +83,11 @@ const iceCreamReducer = (state = initialIceCreamState, action) => {
         ...state,
         numOfIcecream: state.numOfIcecream + action.payLoad,
       }
+    case ORDER_CAKE:
+      return {
+        ...state,
+        numOfIcecream: state.numOfIcecream - 1,
+      }
     default:
       return state
   }
@@ -90,7 +95,7 @@ const iceCreamReducer = (state = initialIceCreamState, action) => {
 
 const rootReducer = combileReducers({
   cake: cakeReducer,
-  iceCream: iceCreamReducer
+  iceCream: iceCreamReducer,
 })
 
 const store = createSotore(rootReducer)
@@ -104,8 +109,8 @@ action.orderCake()
 action.orderCake()
 action.orderCake(3)
 
-action.icecreamOrder(4)
-action.icecreamRestock(5)
+// action.icecreamOrder(4)
+// action.icecreamRestock(5)
 
 // store.dispatch(orderCake())
 // store.dispatch(orderCake())
